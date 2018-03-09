@@ -9,16 +9,41 @@ from celery_tasks.tasks import send_active_email
 from django.conf import settings
 from django.core.mail import send_mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-
+from itsdangerous import SignatureExpired
 # Create your views here.
 
 class ActiveView(View):
     """邮件激活"""
 
-    def get(self, request):
+    def get(self, request, token):
         """处理邮件激活逻辑"""
-        pass
 
+        # 生成序列化器
+        serializer = Serializer(settings.SECRET_KEY, 3600)
+
+        # 调用序列化器的loads()方法，将复杂的字符串还原成字典，并通过原始字典取出对应的user_id
+        try:
+            result = serializer.loads(token)
+        except SignatureExpired:
+            return HttpResponse("激活链接已过期")
+
+        # 取出user_id
+        user_id = result.get("confrim")
+
+        # 通过user_id判断user
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist: # 查询结果不存在
+            return HttpResponse("查询结果不存在")
+
+        # 重置user对应的激活状态为True
+        user.is_active = True
+
+        # 手动保存
+        user.save()
+
+        # 返回结果---跳转到登录界面
+        return redirect(reverse("users:login"))
 
 
 

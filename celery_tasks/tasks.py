@@ -1,3 +1,11 @@
+# import os
+# os.environ["DJANGO_SETTINGS_MODULE"] = "dailyfresh.settings"
+# # 放到celery服务器上时添加的代码
+# import django
+# django.setup()
+
+
+
 from celery import Celery
 from django.conf import settings
 from django.core.mail import send_mail

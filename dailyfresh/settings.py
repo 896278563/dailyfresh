@@ -96,7 +96,7 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dailyfresh',
-        'HOST': '192.168.177.128',       # MySQL的数据库地址
+        'HOST': '192.168.115.222',       # MySQL的数据库地址
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'mysql',
